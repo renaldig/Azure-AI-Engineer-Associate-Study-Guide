@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "projectType": "CustomClassification",
+        "containerName": "YourContainerName",
+        "projectTitle": "YourProjectTitle"
+    },
+    "data": {
+        "categories": [
+            { "name": "Genre1" },
+            { "name": "Genre2" }
+        ],
+        "documents": [
+            {
+                "file": "Document1.txt",
+                "categories": ["Genre1", "Genre2"]
+            },
+            {
+                "file": "Document2.txt",
+                "categories": ["Genre1"]
+            },
+            {
+                "file": "Document3.txt",
+                "categories": ["Genre2"]
+            }
+        ]
+    }
+}

@@ -1,24 +1,22 @@
 import os
 from dotenv import load_dotenv
-from langchain.chat_models import AzureChatOpenAI
+from langchain_openai.chat_models import AzureChatOpenAI
 from langchain.schema import HumanMessage
 
-# Load environment variables
 load_dotenv()
 
-# Set up OpenAI API credentials
-openai_api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
-openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
-openai_api_version = os.getenv("AZURE_OPENAI_API_VERSION")
-deployment_name = os.getenv("AZURE_OPENAI_GPT35_DEPLOYMENT_NAME")
+# Load environment variables
+azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+azure_api_key = os.getenv("AZURE_OPENAI_API_KEY")
+deployment_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
-# Initialize the GPT-3.5 Turbo model
+# Configure AzureChatOpenAI with the correct parameters
 model = AzureChatOpenAI(
-    openai_api_base=openai_api_base,
-    openai_api_version=openai_api_version,
-    deployment_name=deployment_name,
-    openai_api_key=openai_api_key,
-    openai_api_type="azure"
+    azure_endpoint=azure_endpoint,
+    azure_deployment=deployment_name,
+    api_version=api_version,
+    openai_api_key=azure_api_key
 )
 
 def chat():
