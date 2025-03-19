@@ -10,10 +10,10 @@ def get_video_indexer_credentials():
     """
     Retrieves Azure Video Indexer credentials from environment variables.
     """
-    load_dotenv()  # Load environment variables from .env file
+    load_dotenv()
     account_id = os.getenv('VIDEO_INDEXER_ACCOUNT_ID')
     api_key = os.getenv('VIDEO_INDEXER_API_KEY')
-    location = os.getenv('VIDEO_INDEXER_LOCATION')  # e.g., "trial" or specific region like "westus2"
+    location = os.getenv('VIDEO_INDEXER_LOCATION')
 
     if not account_id or not api_key or not location:
         print("Error: VIDEO_INDEXER_ACCOUNT_ID, VIDEO_INDEXER_API_KEY, and VIDEO_INDEXER_LOCATION must be set in the .env file.")

@@ -1,10 +1,11 @@
 import os
 import sys
-import uuid
 import azure.cognitiveservices.speech as speechsdk
 import simpleaudio as sa
+from dotenv import load_dotenv
 
 def get_speech_credentials():
+    load_dotenv()
     """
     Retrieves Azure Speech Service credentials from environment variables.
     """
@@ -35,11 +36,9 @@ def configure_translation(subscription_key, region):
 
     # Add target languages
     translation_config.add_target_language('es')
-    translation_config.add_target_language('fr')
 
     # Set voice for synthesized speech
-    translation_config.set_voice_name('es', 'es-ES-AlvaroNeural')  # Spanish voice
-    translation_config.set_voice_name('fr', 'fr-FR-DeniseNeural')  # French voice
+    translation_config.speech_synthesis_voice_name = 'es-ES-AlvaroNeural'  # Spanish voice
 
     # Configure audio input to use the default microphone
     audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
@@ -125,16 +124,43 @@ def main():
 
     print("Speak into your microphone. Press Ctrl+C to stop.")
 
-    # Start continuous recognition
     translator.start_continuous_recognition()
 
     try:
         while True:
-            pass  # Keep the program running
+            pass
     except KeyboardInterrupt:
         print("\nStopping translation...")
         translator.stop_continuous_recognition()
         print("Translation stopped.")
+
+def recognize_from_microphone():
+    # This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
+    speech_translation_config = speechsdk.translation.SpeechTranslationConfig(subscription=os.environ.get('SPEECH_KEY'), region=os.environ.get('SPEECH_REGION'))
+    speech_translation_config.speech_recognition_language="en-US"
+
+    to_language ="it"
+    speech_translation_config.add_target_language(to_language)
+
+    audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+    translation_recognizer = speechsdk.translation.TranslationRecognizer(translation_config=speech_translation_config, audio_config=audio_config)
+
+    print("Speak into your microphone.")
+    translation_recognition_result = translation_recognizer.recognize_once_async().get()
+
+    if translation_recognition_result.reason == speechsdk.ResultReason.TranslatedSpeech:
+        print("Recognized: {}".format(translation_recognition_result.text))
+        print("""Translated into '{}': {}""".format(
+            to_language, 
+            translation_recognition_result.translations[to_language]))
+    elif translation_recognition_result.reason == speechsdk.ResultReason.NoMatch:
+        print("No speech could be recognized: {}".format(translation_recognition_result.no_match_details))
+    elif translation_recognition_result.reason == speechsdk.ResultReason.Canceled:
+        cancellation_details = translation_recognition_result.cancellation_details
+        print("Speech Recognition canceled: {}".format(cancellation_details.reason))
+        if cancellation_details.reason == speechsdk.CancellationReason.Error:
+            print("Error details: {}".format(cancellation_details.error_details))
+            print("Did you set the speech resource key and region values?")
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,5 @@
 import os
 import sys
-import uuid
 from dotenv import load_dotenv
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials

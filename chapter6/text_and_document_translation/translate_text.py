@@ -2,14 +2,15 @@ import os
 import sys
 import uuid
 import requests
-import json
+from dotenv import load_dotenv
 
 def get_translator_credentials():
+    load_dotenv()
     """
     Retrieves Azure Translator credentials from environment variables.
     """
-    subscription_key = os.environ.get('TRANSLATOR_SUBSCRIPTION_KEY')
-    region = os.environ.get('TRANSLATOR_REGION')
+    subscription_key = os.getenv('TRANSLATOR_SUBSCRIPTION_KEY')
+    region = os.getenv('TRANSLATOR_REGION')
 
     if not subscription_key or not region:
         print("Error: TRANSLATOR_SUBSCRIPTION_KEY and TRANSLATOR_REGION environment variables must be set.")

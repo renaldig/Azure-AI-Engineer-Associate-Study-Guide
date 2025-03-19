@@ -2,11 +2,12 @@
 
 import os
 import sys
+from dotenv import load_dotenv
 from azure.cognitiveservices.speech import (
     SpeechConfig,
     SpeechSynthesizer,
-    SpeechRecognizer,
     AudioConfig,
+    SpeechRecognizer,
     ResultReason,
     CancellationReason
 )
@@ -15,11 +16,12 @@ def get_azure_credentials():
     """
     Retrieves Azure Speech Service credentials from environment variables.
     """
-    speech_key = os.environ.get('AZURE_SPEECH_KEY')
-    service_region = os.environ.get('AZURE_REGION')
+    load_dotenv()
+    speech_key = os.environ.get('SPEECH_SUBSCRIPTION_KEY')
+    service_region = os.environ.get('SPEECH_REGION')
     
     if not speech_key or not service_region:
-        print("Error: AZURE_SPEECH_KEY and AZURE_REGION environment variables must be set.")
+        print("Error: SPEECH_KEY and SPEECH_REGION environment variables must be set.")
         sys.exit(1)
     
     return speech_key, service_region
@@ -36,9 +38,10 @@ def text_to_speech(text, speech_key, service_region):
     try:
         # Initialize Speech Configuration
         speech_config = SpeechConfig(subscription=speech_key, region=service_region)
+        audio_config = AudioConfig(filename="output.wav")
         
         # Create a Speech Synthesizer
-        synthesizer = SpeechSynthesizer(speech_config=speech_config)
+        synthesizer = SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
         
         # Synthesize speech
         result = synthesizer.speak_text_async(text).get()

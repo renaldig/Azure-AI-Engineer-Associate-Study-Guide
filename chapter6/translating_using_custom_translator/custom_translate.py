@@ -1,10 +1,7 @@
-# custom_translate.py
-
 import os
 import sys
 import uuid
 import requests
-import json
 
 def get_translator_credentials():
     """

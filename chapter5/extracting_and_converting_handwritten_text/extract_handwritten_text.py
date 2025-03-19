@@ -1,14 +1,13 @@
 import os
 import sys
 from os.path import join as join_paths
-from azure.ai.vision import ImageAnalysisClient, ImageAnalysisApiKeyCredential, ImageAnalysisOptions
+from azure.ai.vision.imageanalysis import ImageAnalysisClient
+from azure.ai.vision.imageanalysis.models import VisualFeatures
+from azure.core.credentials import AzureKeyCredential
 from dotenv import load_dotenv
 
 def execute_main_process():
-    """
-    Main function to execute the OCR process based on user input.
-    """
-    load_dotenv()  # Load environment variables from .env file
+    load_dotenv()
     endpoint = os.getenv('VISION_API_ENDPOINT')
     key = os.getenv('VISION_API_KEY')
 
@@ -49,25 +48,22 @@ def process_text_extraction(path_to_image, endpoint, key):
     """
     try:
         # Initialize the Image Analysis Client
-        credential = ImageAnalysisApiKeyCredential(key)
+        credential = AzureKeyCredential(key)
         client = ImageAnalysisClient(endpoint=endpoint, credential=credential)
         
         # Read the image data
         with open(path_to_image, "rb") as image_file:
             image_data = image_file.read()
         
-        # Set up the image analysis options
-        options = ImageAnalysisOptions(visual_features=["Read"])
-        
         # Perform image analysis
-        result = client.analyze(image_data=image_data, options=options)
+        result = client.analyze(image_data=image_data, visual_features=[VisualFeatures.READ])
         
         # Extract and print text if available
         if result.read is not None:
             print("\nExtracted Text:")
-            for page in result.read.pages:
-                for line in page.lines:
-                    print(line.content)
+            for page in result.read.blocks[0].lines:
+                for line in page.words:
+                    print(line.text)
         else:
             print("No text recognized.")
     

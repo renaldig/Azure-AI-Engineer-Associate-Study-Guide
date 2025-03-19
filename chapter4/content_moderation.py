@@ -9,7 +9,7 @@ def analyze_text(input_text):
     client = ContentSafetyClient(endpoint, AzureKeyCredential(key))
 
     try:
-        response = client.analyze_text({"data": input_text})
+        response = client.analyze_text({"text": input_text})
         for category_analysis in response.categories_analysis:
             print(f"Category: {category_analysis.category}, Severity: {category_analysis.severity}")
     except HttpResponseError as e:
